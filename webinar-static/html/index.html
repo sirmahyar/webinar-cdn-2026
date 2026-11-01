@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CDN demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+      text-align: center;
+    }
+    #host {
+      font-size: 1.5rem;
+    }
+    #time {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    img {
+      max-width: min(52rem, 100%);
+      height: auto;
+    }
+    .credit {
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <p id="host"></p>
+  <p id="time">Loading image...</p>
+  <img id="photo" alt="Matterhorn mirrored in Riffelsee">
+  <p class="credit">Photo: Dirk Beyer, CC BY-SA 3.0, Wikimedia Commons.</p>
+  <script>
+    const host = document.getElementById("host");
+    const time = document.getElementById("time");
+    const photo = document.getElementById("photo");
+    const url = new URL("image.jpg?demo=2", location.href).href;
+
+    host.textContent = location.host;
+
+    photo.addEventListener("load", () => {
+      const entry = performance.getEntriesByName(url).filter((item) => item.entryType === "resource").pop();
+      const ms = entry ? Math.round(entry.responseEnd - entry.startTime) : 0;
+      time.textContent = "Image loaded in: " + ms + " ms";
+    });
+
+    photo.src = url;
+  </script>
+</body>
+</html>
